@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skymart | SONY WH-CH720N</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Define the futuristic dark theme variables */
+        :root {
+            --primary: #121212; /* Darkest Gray for background */
+            --secondary: #00bcd4; /* Cyan for accents */
+            --accent: #29b6f6; /* Light Blue for subtle glows */
+            --card-bg: rgba(255, 255, 255, 0.08); /* Transparent dark for cards */
+            --border-color: rgba(255, 255, 255, 0.15); /* Subtle border for glass effect */
+            --text-dark: #e0e0e0; /* Light gray for main text */
+            --text-light: #b0b0b0; /* Lighter gray for secondary text */
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: 'Manrope', sans-serif; /* Applied Manrope */
+            background-color: var(--primary); /* Applied Dark BG */
+            color: var(--text-dark); /* Applied Light Text */
+        }
+
+        /* Re-styled Header and Navigation */
+        .logo {
+            color: var(--secondary);
+            text-shadow: 0 0 8px var(--secondary);
+        }
+        
+        .nav-link {
+            position: relative;
+            transition: color 0.3s ease;
+            color: var(--text-light) !important; /* Override Tailwind gray-500 */
+        }
+        .nav-link:hover {
+            color: var(--secondary) !important;
+            text-shadow: 0 0 5px var(--secondary);
+        }
+        .nav-link::after {
+            background-color: var(--secondary) !important; /* Change underline color */
+            box-shadow: 0 0 8px var(--secondary);
+            bottom: -5px; /* Adjust original position */
+        }
+
+        /* Product Card Glass Effect - similar to index.html card-hover */
+        .product-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Thumbnail Active/Hover States */
+        .thumbnail:hover, .thumbnail.active {
+            border-color: var(--secondary) !important;
+            box-shadow: 0 0 10px var(--secondary);
+        }
+        
+        /* Primary Action Button (Add to Cart) */
+        .btn-primary-action {
+            background: linear-gradient(45deg, var(--secondary), var(--accent));
+            box-shadow: 0 4px 15px rgba(0, 188, 212, 0.4);
+            color: var(--primary); /* Dark text on bright button */
+            transition: all 0.3s ease;
+        }
+        .btn-primary-action:hover {
+            background: linear-gradient(45deg, var(--accent), var(--secondary));
+            box-shadow: 0 6px 20px rgba(0, 188, 212, 0.6);
+            color: var(--white); /* White text on hover for contrast */
+            transform: scale(1.05); /* Match original scale effect */
+        }
+        
+        /* Wishlist Button */
+        .wishlist-btn:hover {
+            border-color: var(--secondary) !important;
+            color: var(--secondary) !important;
+        }
+        .wishlist-btn.active {
+            border-color: red !important;
+            color: red !important;
+        }
+        
+        /* Color Selection Ring */
+        .color.ring-2 {
+            /* Keep the same styling but use secondary color for focus/ring */
+            ring-color: var(--secondary) !important; 
+            ring-offset-color: var(--primary) !important;
+        }
+
+        /* Input Focus */
+        input:focus {
+            border-color: var(--secondary) !important;
+            box-shadow: 0 0 5px rgba(0, 188, 212, 0.5);
+        }
+        
+        /* Cart message style */
+        #cart-message {
+            background-color: rgba(18, 18, 18, 0.95) !important;
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0, 188, 212, 0.5);
+            color: var(--text-dark);
+        }
+        
+        /* Overrides to match the dark theme */
+        .text-gray-800 { color: var(--text-dark) !important; }
+        .text-gray-900 { color: var(--white) !important; }
+        .text-gray-500 { color: var(--text-light) !important; }
+        .text-gray-600 { color: var(--text-light) !important; }
+        .bg-gray-100 { background-color: var(--primary) !important; }
+        .bg-white { background-color: transparent !important; }
+        .border-gray-200 { border-color: var(--border-color) !important; }
+        .border-gray-300 { border-color: var(--border-color) !important; }
+        .bg-amber-700 { background-color: transparent !important; } /* Will be replaced by btn-primary-action */
+        .hover\:bg-amber-800 { background-color: transparent !important; }
+        .hover\:border-amber-700 { border-color: var(--secondary) !important; }
+        .focus\:border-amber-500:focus { border-color: var(--secondary) !important; }
+        
+        /* Utility for the modal (kept from original) */
+        .fade-in { animation: fadeIn 0.5s ease-out forwards; }
+        .fade-out { animation: fadeOut 0.5s ease-out forwards; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeOut {
+            from { opacity: 1; transform: translateY(0); }
+            to { opacity: 0; transform: translateY(20px); }
+        }
+        .thumbnail img { object-fit: contain; }
+    </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col items-center p-4 sm:p-8">
+
+    <div class="container max-w-7xl w-full rounded-3xl shadow-2xl overflow-hidden mb-8 product-card">
+
+        <header class="flex flex-col sm:flex-row justify-between items-center px-4 py-6 sm:px-10 border-b border-gray-200 sticky top-0 z-10 bg-[rgba(18,18,18,0.8)] backdrop-blur-sm">
+            <div class="text-3xl font-extrabold tracking-tighter logo mb-4 sm:mb-0">SKY<span class="text-secondary">MART</span></div>
+            <nav>
+                <ul class="flex space-x-4 sm:space-x-8 text-sm sm:text-base font-medium">
+                    <li><a href="#" class="nav-link relative transition-colors">Home</a></li>
+                    <li><a href="#" class="nav-link relative transition-colors">Shop</a></li>
+                    <li><a href="#" class="nav-link relative transition-colors">About</a></li>
+                    <li><a href="#" class="nav-link relative transition-colors">Contact</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <div class="flex flex-col md:flex-row p-6 sm:p-10">
+
+            <div class="w-full md:w-1/2 p-4">
+                <div class="main-image-container relative rounded-2xl overflow-hidden shadow-xl mb-6 transform transition-transform duration-500 hover:scale-105 cursor-zoom-in border border-[var(--border-color)]">
+                    <img src="https://rukminim2.flixcart.com/image/416/416/xif0q/headphone/b/a/m/-original-imagz2d8fjrcy5sy.jpeg?q=70&amp;crop=false" alt="Headphones front view" id="main-img" class="w-full h-full object-contain aspect-[4/3] transition-transform duration-500 hover:scale-110">
+                </div>
+                <div class="flex space-x-3 sm:space-x-4 justify-center">
+                    <div class="thumbnail active w-24 h-24 rounded-lg overflow-hidden cursor-pointer opacity-75 transition-all duration-300 hover:opacity-100 hover:scale-105 hover:shadow-lg border-2 border-secondary" data-img="https://rukminim2.flixcart.com/image/416/416/xif0q/headphone/b/a/m/-original-imagz2d8fjrcy5sy.jpeg?q=70&amp;crop=false">
+                        <img src="https://rukminim2.flixcart.com/image/416/416/xif0q/headphone/b/a/m/-original-imagz2d8fjrcy5sy.jpeg?q=70&amp;crop=false" alt="Headphones front view" class="w-full h-full object-contain bg-gray-900">
+                    </div>
+                    <div class="thumbnail w-24 h-24 rounded-lg overflow-hidden cursor-pointer opacity-75 transition-all duration-300 hover:opacity-100 hover:scale-105 hover:shadow-lg border-2 border-transparent hover:border-secondary" data-img="https://rukminim2.flixcart.com/image/416/416/xif0q/headphone/5/c/k/-original-imagz2d8wfusxjvz.jpeg?q=70&amp;crop=false">
+                        <img src="https://rukminim2.flixcart.com/image/416/416/xif0q/headphone/5/c/k/-original-imagz2d8wfusxjvz.jpeg?q=70&amp;crop=false" alt="Headphones Side View" class="w-full h-full object-contain bg-gray-900">
+                    </div>
+                    <div class="thumbnail w-24 h-24 rounded-lg overflow-hidden cursor-pointer opacity-75 transition-all duration-300 hover:opacity-100 hover:scale-105 hover:shadow-lg border-2 border-transparent hover:border-secondary" data-img="https://rukminim2.flixcart.com/image/416/416/xif0q/headphone/k/o/s/-original-imagz2d8ehekafdn.jpeg?q=70&crop=false">
+                        <img src="https://rukminim2.flixcart.com/image/416/416/xif0q/headphone/k/o/s/-original-imagz2d8ehekafdn.jpeg?q=70&crop=false" alt="In Case" class="w-full h-full object-contain bg-gray-900">
+                    </div>
+                    <div class="thumbnail w-24 h-24 rounded-lg overflow-hidden cursor-pointer opacity-75 transition-all duration-300 hover:opacity-100 hover:scale-105 hover:shadow-lg border-2 border-transparent hover:border-secondary" data-img="https://rukminim2.flixcart.com/image/416/416/xif0q/headphone/y/x/y/-original-imagz2d8fkkf5vme.jpeg?q=70&crop=false">
+                        <img src="https://rukminim2.flixcart.com/image/416/416/xif0q/headphone/y/x/y/-original-imagz2d8fkkf5vme.jpeg?q=70&crop=false" alt="On a person's head" class="w-full h-full object-contain bg-gray-900">
+                    </div>
+                </div>
+            </div>
+
+            <div class="w-full md:w-1/2 p-4">
+                <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-2" id="product-title">SONY WH-CH720N Active Noise Cancelling, 50 Hrs. Battery life, Multipoint Connection Bluetooth</h1>
+                
+                <div class="flex items-center space-x-2 my-2 text-sm text-gray-500">
+                    <span class="bg-green-500 text-white px-2 rounded-md">4.4 ⭐</span>
+                    <span>3,007 Ratings & 244 Reviews</span>
+                    <i class="fas fa-medal text-gray-400"></i>
+                </div>
+
+                <div class="flex items-center space-x-4 my-6">
+                    <span class="text-3xl font-extrabold text-secondary">₹8,628</span> <span class="text-xl text-gray-400 line-through">₹14,990</span>
+                    <span class="bg-secondary text-primary text-xs font-bold px-3 py-1 rounded-full shadow-md shadow-secondary/50">42% off</span> </div>
+                
+                <p class="text-gray-500 leading-relaxed mb-6 border-b border-gray-700 pb-6" id="product-description">
+                    Black, On the Ear. Enjoy your music with uninterrupted focus. Experience audio perfection with Skymart's curated electronics.
+                </p>
+
+                <div class="available-offers mb-6">
+                    <h3 class="text-sm font-semibold text-gray-600 mb-2">Available offers</h3>
+                    <ul class="list-disc list-inside space-y-1 text-gray-500 text-sm">
+                        <li><span class="font-semibold text-secondary">Bank Offer</span> 10% Off on Supermoney UPI. Max discount of ₹50. Minimum order value of ₹250. <a href="#" class="text-accent hover:underline">T&C</a></li>
+                        <li><span class="font-semibold text-secondary">Bank Offer</span> 5% cashback on Flipkart SBI Credit Card upto ₹4,000 per calendar quarter <a href="#" class="text-accent hover:underline">T&C</a></li>
+                        <li><span class="font-semibold text-secondary">Bank Offer</span> 5% cashback on Axis Bank Flipkart Debit Card <a href="#" class="text-accent hover:underline">T&C</a></li>
+                        <li><span class="font-semibold text-secondary">Special Price</span> Get extra 42% Off <a href="#" class="text-accent hover:underline">T&C</a></li>
+                    </ul>
+                </div>
+                
+                <div class="flex items-center space-x-4 my-6">
+                    <div class="flex items-center border border-gray-700 rounded-full py-1 px-2">
+                        <button class="minus w-8 h-8 rounded-full text-lg font-bold hover:bg-gray-800 transition-colors duration-200 text-white">-</button>
+                        <span id="quantity" class="mx-4 font-semibold text-lg text-white">1</span>
+                        <button class="plus w-8 h-8 rounded-full text-lg font-bold hover:bg-gray-800 transition-colors duration-200 text-white">+</button>
+                    </div>
+                    <button id="add-to-cart" class="flex-1 px-8 py-3 btn-primary-action rounded-full font-bold text-sm sm:text-lg flex items-center justify-center space-x-2">
+                        <i class="fas fa-shopping-cart"></i> <span>Add to Cart</span>
+                    </button>
+                    <button class="wishlist w-12 h-12 rounded-full border border-gray-700 text-gray-500 wishlist-btn transition-all duration-300 transform hover:scale-110 flex items-center justify-center">
+                        <i class="far fa-heart text-xl"></i>
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-6 text-gray-500 mb-6">
+                    <div>
+                        <h3 class="font-semibold text-secondary mb-2">Highlights</h3>
+                        <ul class="list-disc list-inside space-y-2 text-sm">
+                            <li>With Mic: Yes</li>
+                            <li>Connector type: 3.5 mm</li>
+                            <li>Bluetooth version: 5.2</li>
+                            <li class="line-through">Battery life: 35 hrs (Conflicting spec)</li>
+                            <li>Battery life: <span class="text-secondary">50 hrs.</span></li>
+                            <li>Sony's lightest Wireless Noise-canceling headband.</li>
+                            <li>Up to 50 Hrs. battery with quick charging(3 min charge for up to 1 hour playback)</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-secondary mb-2">Services</h3>
+                        <ul class="list-disc list-inside space-y-2 text-sm">
+                            <li>12 Months Brand Warranty</li>
+                            <li>Cash on Delivery available</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <h3 class="text-sm font-semibold text-gray-600 mb-2">Color:</h3>
+                    <div class="flex space-x-4">
+                        <div class="color w-10 h-10 rounded-full cursor-pointer transition-transform duration-300 hover:scale-125 bg-gray-900 ring-2 ring-secondary ring-offset-2 ring-offset-primary active-color" data-color="gray-900"></div>
+                        <div class="color w-10 h-10 rounded-full cursor-pointer transition-transform duration-300 hover:scale-125 bg-gray-600" data-color="gray-600"></div>
+                        <div class="color w-10 h-10 rounded-full cursor-pointer transition-transform duration-300 hover:scale-125 bg-pink-300" data-color="pink-300"></div>
+                        <div class="color w-10 h-10 rounded-full cursor-pointer transition-transform duration-300 hover:scale-125 bg-slate-300" data-color="slate-300"></div>
+                    </div>
+                </div>
+                
+                <div class="delivery-details mb-6">
+                    <h3 class="text-sm font-semibold text-gray-600 mb-2">Delivery</h3>
+                    <div class="flex items-center space-x-2">
+                        <input type="text" placeholder="Enter pincode" class="flex-1 p-2 border border-gray-700 rounded-lg focus:outline-none focus:border-secondary bg-transparent text-white">
+                        <button class="p-2 bg-gray-800 rounded-lg text-secondary font-semibold hover:bg-gray-700 transition-colors">Check</button>
+                    </div>
+                    <p class="mt-2 text-sm text-gray-500">Delivery by 24 Sep, Wednesday</p>
+                    <a href="#" class="text-accent text-sm hover:underline">View Details</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="cart-message" class="hidden fixed bottom-8 right-8 text-white px-6 py-3 rounded-xl shadow-2xl flex items-center space-x-2 transform translate-y-full transition-transform duration-300">
+        <i class="fas fa-check-circle text-secondary text-xl"></i>
+        <span>Item added to cart!</span>
+    </div>
+
+    <footer class="text-center py-6 text-gray-500 text-sm mt-auto">
+        <p>&copy; 2024 Skymart. All rights reserved.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const mainImg = document.getElementById('main-img');
+            const thumbnails = document.querySelectorAll('.thumbnail');
+            const colors = document.querySelectorAll('.color');
+            const minusBtn = document.querySelector('.minus');
+            const plusBtn = document.querySelector('.plus');
+            const quantitySpan = document.getElementById('quantity');
+            const addToCartBtn = document.getElementById('add-to-cart');
+            const wishlistBtn = document.querySelector('.wishlist');
+            const cartMessage = document.getElementById('cart-message');
+            
+            let quantity = 1;
+
+            // Thumbnail interaction
+            thumbnails.forEach(thumb => {
+                thumb.addEventListener('click', () => {
+                    thumbnails.forEach(t => {
+                        // Use secondary color for active state
+                        t.classList.remove('border-secondary');
+                        t.classList.add('border-transparent');
+                    });
+                    thumb.classList.add('border-secondary');
+                    thumb.classList.remove('border-transparent');
+                    mainImg.src = thumb.dataset.img;
+                });
+            });
+            
+            // Color selection
+            colors.forEach(color => {
+                color.addEventListener('click', () => {
+                    colors.forEach(c => {
+                        // Remove ring classes
+                        c.classList.remove('ring-2', 'ring-secondary', 'ring-offset-2', 'ring-offset-primary');
+                    });
+                    // Add ring classes with secondary color
+                    color.classList.add('ring-2', 'ring-secondary', 'ring-offset-2', 'ring-offset-primary');
+                });
+            });
+
+            // Quantity adjustment
+            minusBtn.addEventListener('click', () => {
+                if (quantity > 1) {
+                    quantity--;
+                    quantitySpan.textContent = quantity;
+                }
+            });
+
+            plusBtn.addEventListener('click', () => {
+                quantity++;
+                quantitySpan.textContent = quantity;
+            });
+
+            // Add to cart message
+            addToCartBtn.addEventListener('click', () => {
+                cartMessage.classList.remove('hidden', 'fade-out');
+                cartMessage.classList.add('fade-in');
+
+                setTimeout(() => {
+                    cartMessage.classList.remove('fade-in');
+                    cartMessage.classList.add('fade-out');
+                }, 2000);
+            });
+
+            // Wishlist animation
+            wishlistBtn.addEventListener('click', () => {
+                const icon = wishlistBtn.querySelector('i');
+                // Use a class to toggle the active/filled state
+                if (wishlistBtn.classList.contains('active')) {
+                    icon.classList.remove('fas');
+                    icon.classList.add('far');
+                    wishlistBtn.classList.remove('active');
+                } else {
+                    icon.classList.remove('far');
+                    icon.classList.add('fas');
+                    wishlistBtn.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

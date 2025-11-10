@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skhymart | The Future of Shopping</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #121212; /* Darkest Gray for background */
+            --secondary: #00bcd4; /* Cyan for accents, slightly brighter */
+            --accent: #29b6f6; /* Light Blue for subtle glows */
+            --card-bg: rgba(255, 255, 255, 0.08); /* Transparent dark for cards */
+            --border-color: rgba(255, 255, 255, 0.15); /* Subtle border for glass effect */
+            --text-dark: #e0e0e0; /* Light gray for text on dark bg */
+            --text-light: #b0b0b0; /* Lighter gray for secondary text */
+            --white: #ffffff;
+            --gradient-start: rgba(0, 188, 212, 0.3);
+            --gradient-end: rgba(41, 182, 246, 0.3);
+        }
+
+        body {
+            font-family: 'Manrope', sans-serif;
+            background-color: var(--primary);
+            color: var(--text-dark);
+            overflow-x: hidden;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .scroll-animate {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+
+        .scroll-animate.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Custom Components */
+        .hero {
+            background-image: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1555529669-e69e7aa0ba9e?q=80&w=2940&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 50% 50%, var(--gradient-start) 0%, transparent 50%);
+            opacity: 0.15;
+            animation: pulseGlow 8s infinite alternate;
+        }
+
+        @keyframes pulseGlow {
+            0% { transform: scale(1); opacity: 0.15; }
+            50% { transform: scale(1.1); opacity: 0.25; }
+            100% { transform: scale(1); opacity: 0.15; }
+        }
+
+        .card-hover {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-hover::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0) 50%);
+            pointer-events: none;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4), 0 0 10px var(--accent), 0 0 20px var(--secondary);
+            border-color: rgba(255, 255, 255, 0.25);
+        }
+
+        .btn {
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(45deg, var(--secondary), var(--accent));
+            box-shadow: 0 4px 15px rgba(0, 188, 212, 0.4);
+            color: var(--primary); /* Dark text on bright button */
+        }
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 188, 212, 0.6);
+            color: white; /* White text on hover */
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--secondary);
+            color: var(--secondary);
+            box-shadow: 0 0 8px rgba(0, 188, 212, 0.3);
+        }
+        .btn-outline:hover {
+            background: linear-gradient(45deg, var(--secondary), var(--accent));
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 0 15px rgba(0, 188, 212, 0.6);
+        }
+
+        .nav-link {
+            position: relative;
+            transition: color 0.3s ease;
+            color: var(--text-light);
+        }
+        .nav-link:hover {
+            color: var(--secondary);
+            text-shadow: 0 0 5px var(--secondary);
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 2px;
+            background-color: var(--secondary);
+            box-shadow: 0 0 8px var(--secondary);
+            transition: width 0.3s ease;
+        }
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        
+        #mobile-menu {
+            transform: translateX(100%);
+            transition: transform 0.3s ease-in-out;
+            background-color: rgba(18, 18, 18, 0.95);
+            backdrop-filter: blur(10px);
+        }
+        #mobile-menu.active {
+            transform: translateX(0);
+        }
+
+        header {
+            background-color: rgba(18, 18, 18, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+        }
+        .logo {
+            color: var(--secondary);
+            text-shadow: 0 0 8px var(--secondary);
+        }
+
+        #search-container.active #search-input {
+            width: 200px;
+            opacity: 1;
+            padding-left: 1rem;
+            padding-right: 1rem;
+            border-color: var(--secondary);
+        }
+
+        #search-container.active #search-btn {
+            color: var(--secondary);
+        }
+
+        .btn-loader.hidden {
+            display: none;
+        }
+
+
+
+
+
+
+
+        .hero-image-large {
+    background-image: url('https://imgs.search.brave.com/_WSihwo2-HRiXz_kGQIZXX26FREdnEnlvzPKTUKtRDE/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90NC5m/dGNkbi5uZXQvanBn/LzEwLzc3LzY4LzQ3/LzM2MF9GXzEwNzc2/ODQ3ODVfdlVueUpT/R0xaQVRqT1RQMURY/WDF0MW9pTzNJUmNR/Z0EuanBn');
+    background-size: cover;
+    background-position: center;
+    width: 550px; /* Bigger width */
+    height: 380px; /* Bigger height */
+    border-radius: 24px;
+    box-shadow: 0 0 25px rgba(0, 188, 212, 0.4), 0 0 50px rgba(41, 182, 246, 0.3);
+    transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+/* .hero-image-large:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 40px rgba(0, 188, 212, 0.6), 0 0 80px rgba(41, 182, 246, 0.5); */
+}
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#" class="text-3xl font-extrabold tracking-tighter logo">SKYMART</a>
+            <nav class="hidden md:flex items-center space-x-8">
+                <a href="#home" class="nav-link font-medium">Home</a>
+                <a href="#categories" class="nav-link font-medium">Categories</a>
+                <a href="#featured" class="nav-link font-medium">Featured</a>
+                <a href="#testimonials" class="nav-link font-medium">Testimonials</a>
+            </nav>
+            <div class="hidden md:flex items-center space-x-4" id="header-icons">
+                 <div id="search-container" class="relative flex items-center">
+                    <input type="text" id="search-input" placeholder="Search..." class="absolute right-8 w-0 opacity-0 bg-[var(--card-bg)] backdrop-blur-sm border border-[var(--border-color)] focus:border-secondary rounded-full py-1 text-white focus:outline-none transition-all duration-500 ease-in-out">
+                    <button id="search-btn" class="text-text-light hover:text-secondary z-10 transition-colors duration-300">
+                        <i class="fas fa-search text-xl"></i>
+                    </button>
+                </div>
+                 <div id="user-controls-container" class="flex items-center space-x-4">
+                    <button id="cart-button" class="relative text-text-light hover:text-secondary">
+                        <i class="fas fa-shopping-cart text-xl"></i>
+                        <span class="absolute -top-1 -right-2 bg-secondary text-primary rounded-full w-4 h-4 flex items-center justify-center text-xs font-bold shadow-md shadow-secondary/50">3</span>
+                    </button>
+                </div>
+            </div>
+            <button id="mobile-menu-btn" class="md:hidden text-text-dark z-50">
+                <i class="fas fa-bars text-2xl"></i>
+            </button>
+        </div>
+    </header>
+
+    <div id="mobile-menu" class="fixed inset-0 z-40 md:hidden">
+        <div class="flex flex-col items-center justify-center h-full space-y-8">
+            <a href="#home" class="text-white text-2xl font-bold hover:text-secondary">Home</a>
+            <a href="#categories" class="text-white text-2xl font-bold hover:text-secondary">Categories</a>
+            <a href="#featured" class="text-white text-2xl font-bold hover:text-secondary">Featured</a>
+            <a href="#testimonials" class="text-white text-2xl font-bold hover:text-secondary">Testimonials</a>
+        </div>
+    </div>
+<section id="home" class="hero min-h-[70vh] flex items-center py-20">
+    <div class="container mx-auto px-6 text-left relative z-10 flex flex-col md:flex-row items-center justify-between gap-12">
+        <div class="max-w-xl">
+            <h1 class="text-5xl md:text-7xl font-extrabold leading-tight tracking-tighter mb-4 text-white" style="animation: fadeIn 1s ease-out; text-shadow: 0 0 15px rgba(0, 188, 212, 0.5);">The Future of Shopping is Here.</h1>
+            <p class="text-xl mb-8 text-text-light" style="animation: fadeIn 1s 0.3s ease-out backwards;">Experience a seamless, modern, and delightful shopping journey. Discover curated collections and unbeatable deals, all in one place.</p>
+            <div style="animation: fadeIn 1s 0.6s ease-out backwards;">
+                <a href="#featured" class="btn btn-secondary px-8 py-4 rounded-lg font-bold uppercase tracking-wider">Get Started</a>
+            </div>
+        </div>
+        <div class="hero-image-large flex-shrink-0"></div>
+    </div>
+</section>
+
+    <section id="categories" class="py-20 bg-primary">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16 scroll-animate">
+                <h2 class="text-4xl font-extrabold tracking-tight text-white">Explore Our Collections</h2>
+                <p class="text-lg text-text-light mt-2 max-w-2xl mx-auto">Find exactly what you're looking for by browsing our curated categories.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="relative rounded-lg card-hover scroll-animate overflow-hidden h-64 flex flex-col justify-end items-center text-center p-6 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1512436991641-6745cdb1723f?q=80&w=2940&auto=format&fit=crop')">
+                    <div class="absolute inset-0 bg-black/60"></div>
+                    <div class="relative z-10">
+                        <div class="text-secondary text-4xl mb-2"><i class="fas fa-tshirt"></i></div>
+                        <h3 class="text-xl font-bold mb-1 text-white">Clothing</h3>
+                        <p class="text-text-light text-sm">Latest trends & styles</p>
+                    </div>
+                </div>
+                <div class="relative rounded-lg card-hover scroll-animate overflow-hidden h-64 flex flex-col justify-end items-center text-center p-6 bg-cover bg-center" style="transition-delay: 100ms; background-image: url('https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=2940&auto=format&fit=crop')">
+                    <div class="absolute inset-0 bg-black/60"></div>
+                    <div class="relative z-10">
+                        <div class="text-secondary text-4xl mb-2"><i class="fas fa-shoe-prints"></i></div>
+                        <h3 class="text-xl font-bold mb-1 text-white">Running Shoes</h3>
+                        <p class="text-text-light text-sm">Performance & comfort</p>
+                    </div>
+                </div>
+                <div class="relative rounded-lg card-hover scroll-animate overflow-hidden h-64 flex flex-col justify-end items-center text-center p-6 bg-cover bg-center" style="transition-delay: 200ms; background-image: url('https://images.unsplash.com/photo-1596462502278-27bfdc403348?q=80&w=2940&auto=format&fit=crop')">
+                    <div class="absolute inset-0 bg-black/60"></div>
+                    <div class="relative z-10">
+                        <div class="text-secondary text-4xl mb-2"><i class="fas fa-gem"></i></div>
+                        <h3 class="text-xl font-bold mb-1 text-white">Beauty Items</h3>
+                        <p class="text-text-light text-sm">Glow up your look</p>
+                    </div>
+                </div>
+                <div class="relative rounded-lg card-hover scroll-animate overflow-hidden h-64 flex flex-col justify-end items-center text-center p-6 bg-cover bg-center" style="transition-delay: 300ms; background-image: url('https://imgs.search.brave.com/pmmguUqqrl5eC8x8nWm_GxcDWu5dtKiKyJ5rTmVQOkQ/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWcu/ZnJlZXBpay5jb20v/ZnJlZS1waG90by9o/ZWFkcGhvbmVzLWRp/c3BsYXllZC1hZ2Fp/bnN0LWRhcmstYmFj/a2dyb3VuZF8xNTcw/MjctNDQ2Ni5qcGc_/c2VtdD1haXNfaW5j/b21pbmcmdz03NDAm/cT04MA')">
+                    <div class="absolute inset-0 bg-black/60"></div>
+                    <div class="relative z-10">
+                        <div class="text-secondary text-4xl mb-2"><i class="fas fa-laptop-code"></i></div>
+                        <h3 class="text-xl font-bold mb-1 text-white">Electronics</h3>
+                        <p class="text-text-light text-sm">The latest in tech</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-20 bg-gray-900/50 text-white">
+        <div class="container mx-auto px-6 text-center scroll-animate">
+            <h2 class="text-4xl font-extrabold tracking-tight mb-4">Block Theme Goodness</h2>
+            <p class="text-lg text-gray-300 max-w-3xl mx-auto mb-8">Skhymart is built with a modern stack, meaning you get the best performance and a seamless experience. No rigid layouts, just pure shopping bliss.</p>
+            <a href="#" class="btn btn-secondary text-white px-8 py-3 rounded-lg font-bold uppercase tracking-wider">Learn More</a>
+        </div>
+    </section>
+
+    <section id="featured" class="py-20 bg-primary">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16 scroll-animate">
+                <h2 class="text-4xl font-extrabold tracking-tight text-white">This Week's Top Picks</h2>
+                <p class="text-lg text-text-light mt-2">Handpicked for you. Don't miss out on these popular items.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                <div class="rounded-xl overflow-hidden card-hover scroll-animate flex flex-col">
+                    <img src="https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?q=80&w=2787&auto=format&fit=crop" alt="Running Shoes" class="w-full h-64 object-cover">
+                    <div class="p-6 flex flex-col flex-grow">
+                        <h3 class="text-2xl font-bold mb-2 text-white">AeroGlide Runners</h3>
+                        <p class="text-text-light mb-4 flex-grow">Lightweight, durable, and built for speed. Perfect for your daily run.</p>
+                        <div class="flex justify-between items-center mt-auto">
+                            <span class="text-2xl font-extrabold text-secondary">₹999</span>
+                             <div class="flex items-center space-x-2">
+                                <button class="btn btn-outline px-4 py-2 rounded-lg font-bold text-sm">View</button>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="rounded-xl overflow-hidden card-hover scroll-animate flex flex-col" style="transition-delay: 100ms;">
+                    <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=2940&auto=format&fit=crop" alt="Headphones" class="w-full h-64 object-cover">
+                    <div class="p-6 flex flex-col flex-grow">
+                        <h3 class="text-2xl font-bold mb-2 text-white">Noise-Cancelling Headphones</h3>
+                        <p class="text-text-light mb-4 flex-grow">Immerse yourself in pure sound with our best-in-class headphones.</p>
+                        <div class="flex justify-between items-center mt-auto">
+                            <span class="text-2xl font-extrabold text-secondary">₹2499</span>
+                            <div class="flex items-center space-x-2">
+                                <button class="btn btn-outline px-4 py-2 rounded-lg font-bold text-sm">View</button>
+                               
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="rounded-xl overflow-hidden card-hover scroll-animate flex flex-col" style="transition-delay: 200ms;">
+                    <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=2898&auto=format&fit=crop" alt="Smart Watch" class="w-full h-64 object-cover">
+                    <div class="p-6 flex flex-col flex-grow">
+                        <h3 class="text-2xl font-bold mb-2 text-white">Smart Watch Pro</h3>
+                        <p class="text-text-light mb-4 flex-grow">Stay connected and track your fitness goals with this sleek smartwatch.</p>
+                        <div class="flex justify-between items-center mt-auto">
+                            <span class="text-2xl font-extrabold text-secondary">₹4999</span>
+                            <div class="flex items-center space-x-2">
+                                <button class="btn btn-outline px-4 py-2 rounded-lg font-bold text-sm">View</button>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="testimonials" class="py-20 bg-primary">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16 scroll-animate">
+                <h2 class="text-4xl font-extrabold tracking-tight text-white">Loved by Shoppers Worldwide</h2>
+                <p class="text-lg text-text-light mt-2">Here's what our happy customers have to say about Skhymart.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="p-8 rounded-lg card-hover scroll-animate">
+                    <i class="fas fa-quote-left text-secondary text-3xl mb-4"></i>
+                    <p class="text-text-light mb-6">"The product quality is exceptional, and the customer service is top-notch. My order arrived faster than I expected. Will definitely be a returning customer!"</p>
+                    <div class="flex items-center">
+                        <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Customer" class="w-12 h-12 rounded-full object-cover border border-secondary/50 shadow-md shadow-secondary/30">
+                        <div class="ml-4">
+                            <h4 class="font-bold text-white">John D.</h4>
+                            <p class="text-gray-500 text-sm">New York, USA</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-8 rounded-lg card-hover scroll-animate" style="transition-delay: 100ms;">
+                    <i class="fas fa-quote-left text-secondary text-3xl mb-4"></i>
+                    <p class="text-text-light mb-6">"Skhymart has become my go-to for online shopping. The website is beautiful and easy to navigate. I found exactly what I needed in minutes. Highly recommended!"</p>
+                    <div class="flex items-center">
+                        <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Customer" class="w-12 h-12 rounded-full object-cover border border-secondary/50 shadow-md shadow-secondary/30">
+                        <div class="ml-4">
+                            <h4 class="font-bold text-white">Sarah L.</h4>
+                            <p class="text-gray-500 text-sm">London, UK</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-8 rounded-lg card-hover scroll-animate" style="transition-delay: 200ms;">
+                    <i class="fas fa-quote-left text-secondary text-3xl mb-4"></i>
+                    <p class="text-text-light mb-6">"An amazing selection of products at great prices. The checkout process was incredibly smooth and secure. Five stars all the way from me!"</p>
+                    <div class="flex items-center">
+                        <img src="https://randomuser.me/api/portraits/men/46.jpg" alt="Customer" class="w-12 h-12 rounded-full object-cover border border-secondary/50 shadow-md shadow-secondary/30">
+                        <div class="ml-4">
+                            <h4 class="font-bold text-white">Michael P.</h4>
+                            <p class="text-gray-500 text-sm">Sydney, AU</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <button id="ai-assistant-fab" class="fixed bottom-6 right-6 bg-gradient-to-br from-secondary to-accent text-white w-16 h-16 rounded-full shadow-lg flex items-center justify-center z-50 transform hover:scale-110 transition-transform">
+        <i class="fas fa-magic text-2xl"></i>
+    </button>
+
+    <div id="ai-assistant-modal" class="fixed inset-0 bg-black bg-opacity-70 z-[100] hidden items-center justify-center p-4">
+        <div class="bg-primary border border-border-color rounded-2xl shadow-2xl w-full max-w-lg p-6 relative card-hover">
+            <button id="close-assistant-modal" class="absolute top-4 right-4 text-text-light hover:text-white">
+                <i class="fas fa-times text-2xl"></i>
+            </button>
+            <div class="flex items-center mb-4">
+                <h2 class="text-2xl font-bold text-white mr-2">✨ AI Shopping Assistant</h2>
+            </div>
+            <p class="text-text-light mb-4">Need inspiration? Describe what you're looking for, and I'll suggest some ideas!</p>
+            
+            <div id="assistant-response-container" class="mb-4 p-4 bg-black bg-opacity-20 rounded-lg min-h-[100px] text-text-dark whitespace-pre-wrap overflow-y-auto max-h-48"></div>
+
+            <div class="flex flex-col">
+                <textarea id="assistant-input" class="w-full bg-black bg-opacity-20 border border-border-color rounded-lg p-2 text-white focus:ring-2 focus:ring-secondary focus:outline-none mb-4" rows="3" placeholder="e.g., 'Help me find a gift for a friend who loves hiking'"></textarea>
+                <button id="get-advice-btn" class="btn btn-secondary py-3 rounded-lg font-bold">
+                    <span class="btn-text">Get Advice</span>
+                    <span class="btn-loader hidden">
+                        <i class="fas fa-spinner fa-spin"></i>
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="ai-description-modal" class="fixed inset-0 bg-black bg-opacity-70 z-[100] hidden items-center justify-center p-4">
+        <div class="bg-primary border border-border-color rounded-2xl shadow-2xl w-full max-w-lg p-6 relative card-hover">
+            <button id="close-description-modal" class="absolute top-4 right-4 text-text-light hover:text-white">
+                <i class="fas fa-times text-2xl"></i>
+            </button>
+            <h2 id="ai-description-title" class="text-2xl font-bold text-white mb-4"></h2>
+            <div id="ai-description-content" class="text-text-light whitespace-pre-wrap overflow-y-auto max-h-60">
+                <div class="flex justify-center items-center h-24">
+                    <i class="fas fa-spinner fa-spin text-3xl text-secondary"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="profile-dashboard-modal" class="fixed inset-0 bg-black bg-opacity-70 z-[100] hidden items-center justify-center p-4">
+        <div class="bg-primary border border-border-color rounded-2xl shadow-2xl w-full max-w-md p-6 relative card-hover">
+            <button id="close-profile-modal" class="absolute top-4 right-4 text-text-light hover:text-white">
+                <i class="fas fa-times text-2xl"></i>
+            </button>
+            <div class="flex items-center mb-4">
+                <h2 class="text-2xl font-bold text-white mr-2">Your Profile</h2>
+            </div>
+            <div id="profile-info" class="space-y-4 text-text-light">
+                <div class="flex items-center gap-4 p-4 rounded-lg bg-black/20">
+                    <i class="fas fa-user-circle text-4xl text-secondary"></i>
+                    <div>
+                        <p class="font-bold text-white text-lg" id="profile-name">Name: John Doe</p>
+                        <p class="text-sm" id="profile-email">Email: johndoe@example.com</p>
+                    </div>
+                </div>
+                <p>Welcome to your personal Skhymart dashboard! Here you can manage your orders, track shipments, and update your account information.</p>
+                <div class="grid grid-cols-2 gap-4">
+                    <button class="btn btn-outline py-2 rounded-lg font-bold">My Orders</button>
+                    <button class="btn btn-outline py-2 rounded-lg font-bold">Settings</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-primary text-white">
+        <div class="container mx-auto px-6 py-12">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="font-bold text-lg mb-4 tracking-wider text-secondary">SKHYMART</h3>
+                    <p class="text-gray-400">The future of online shopping, delivered today.</p>
+                </div>
+                <div>
+                    <h3 class="font-bold text-lg mb-4 tracking-wider text-white">Shop</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-secondary">New Arrivals</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-secondary">Best Sellers</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-secondary">Deals</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-bold text-lg mb-4 tracking-wider text-white">Support</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-secondary">Contact Us</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-secondary">FAQ</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-secondary">Shipping & Returns</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-bold text-lg mb-4 tracking-wider text-white">Connect</h3>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-secondary text-xl"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-secondary text-xl"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-secondary text-xl"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-10 pt-6 text-center text-gray-400 text-sm">
+                <p>&copy; 2023 Skhymart. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // --- START OF AI ENHANCEMENTS SCRIPT ---
+
+        const aiAssistantFab = document.getElementById('ai-assistant-fab');
+        const aiAssistantModal = document.getElementById('ai-assistant-modal');
+        const closeAssistantModalBtn = document.getElementById('close-assistant-modal');
+        const getAdviceBtn = document.getElementById('get-advice-btn');
+        const assistantInput = document.getElementById('assistant-input');
+        const assistantResponseContainer = document.getElementById('assistant-response-container');
+
+        const aiDescriptionModal = document.getElementById('ai-description-modal');
+        const closeDescriptionModalBtn = document.getElementById('close-description-modal');
+        const aiDescriptionTitle = document.getElementById('ai-description-title');
+        const aiDescriptionContent = document.getElementById('ai-description-content');
+        const aiDescriptionBtns = document.querySelectorAll('.ai-description-btn');
+
+        // Gemini API Configuration
+        const apiKey = ""; // Per instructions, this is populated by the environment.
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+
+        // Generic function to call Gemini API with exponential backoff
+        async function callGemini(prompt, retries = 3, delay = 1000) {
+            try {
+                const payload = { contents: [{ parts: [{ text: prompt }] }] };
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    if (response.status === 429 && retries > 0) {
+                        console.warn(`Rate limited. Retrying in ${delay}ms...`);
+                        await new Promise(res => setTimeout(res, delay));
+                        return callGemini(prompt, retries - 1, delay * 2);
+                    }
+                    throw new Error(`API call failed with status: ${response.status}`);
+                }
+
+                const result = await response.json();
+                const text = result.candidates?.[0]?.content?.parts?.[0]?.text;
+                return text || "Sorry, I couldn't generate a response. The result was empty.";
+            } catch (error) {
+                console.error("Gemini API call error:", error);
+                return `An error occurred while contacting the AI: ${error.message}. Please try again later.`;
+            }
+        }
+
+        // --- AI Shopping Assistant Logic ---
+
+        aiAssistantFab.addEventListener('click', () => {
+            aiAssistantModal.classList.remove('hidden');
+            aiAssistantModal.classList.add('flex');
+        });
+
+        closeAssistantModalBtn.addEventListener('click', () => {
+            aiAssistantModal.classList.add('hidden');
+            aiAssistantModal.classList.remove('flex');
+        });
+
+        getAdviceBtn.addEventListener('click', async () => {
+            const userInput = assistantInput.value.trim();
+            if (!userInput) {
+                assistantResponseContainer.textContent = "Please enter what you're looking for.";
+                return;
+            }
+
+            const getAdviceBtnText = getAdviceBtn.querySelector('.btn-text');
+            const getAdviceBtnLoader = getAdviceBtn.querySelector('.btn-loader');
+
+            getAdviceBtnText.classList.add('hidden');
+            getAdviceBtnLoader.classList.remove('hidden');
+            getAdviceBtn.disabled = true;
+            assistantResponseContainer.innerHTML = '<div class="flex justify-center items-center h-full"><i class="fas fa-spinner fa-spin text-2xl text-secondary"></i></div>';
+
+            const prompt = `You are a friendly and helpful shopping assistant for Skhymart, a futuristic online store. A customer is asking for advice. Their query is: "${userInput}". Based on this, suggest 3-4 creative product ideas from our store's categories (Apparel, Electronics, Home Goods, Fitness). Be enthusiastic and format your response clearly.`;
+            
+            const response = await callGemini(prompt);
+            assistantResponseContainer.textContent = response;
+
+            getAdviceBtnText.classList.remove('hidden');
+            getAdviceBtnLoader.classList.add('hidden');
+            getAdviceBtn.disabled = false;
+        });
+
+        // --- AI Product Description Logic ---
+
+        aiDescriptionBtns.forEach(btn => {
+            btn.addEventListener('click', async () => {
+                const productName = btn.dataset.product;
+                const productCategory = btn.dataset.category;
+
+                aiDescriptionTitle.textContent = productName;
+                aiDescriptionContent.innerHTML = '<div class="flex justify-center items-center h-24"><i class="fas fa-spinner fa-spin text-3xl text-secondary"></i></div>';
+                aiDescriptionModal.classList.remove('hidden');
+                aiDescriptionModal.classList.add('flex');
+
+                const prompt = `You are a creative marketing copywriter for Skhymart, a futuristic e-commerce store. Write a short, exciting, and persuasive product description for a product named "${productName}", which is a type of ${productCategory}. Highlight its key features in a fun, engaging, and slightly futuristic tone. Do not use markdown.`;
+
+                const response = await callGemini(prompt);
+                aiDescriptionContent.textContent = response;
+            });
+        });
+
+        closeDescriptionModalBtn.addEventListener('click', () => {
+            aiDescriptionModal.classList.add('hidden');
+            aiDescriptionModal.classList.remove('flex');
+            aiDescriptionContent.innerHTML = ''; // Clear content
+        });
+
+        // --- USER PROFILE LOGIC ---
+        const profileDashboardModal = document.getElementById('profile-dashboard-modal');
+        const closeProfileModalBtn = document.getElementById('close-profile-modal');
+        const userControlsContainer = document.getElementById('user-controls-container');
+
+        function checkUserLoginStatus() {
+            const userData = localStorage.getItem('skymartUser');
+            if (userData) {
+                const user = JSON.parse(userData);
+                userControlsContainer.innerHTML = `
+                    <button id="profile-button" class="relative text-text-light hover:text-secondary">
+                        <i class="fas fa-user-circle text-xl"></i>
+                    </button>
+                `;
+                
+                document.getElementById('profile-name').textContent = `Name: ${user.name}`;
+                document.getElementById('profile-email').textContent = `Email: ${user.email}`;
+
+                document.getElementById('profile-button').addEventListener('click', () => {
+                    profileDashboardModal.classList.remove('hidden');
+                    profileDashboardModal.classList.add('flex');
+                });
+            }
+        }
+
+        closeProfileModalBtn.addEventListener('click', () => {
+            profileDashboardModal.classList.add('hidden');
+            profileDashboardModal.classList.remove('flex');
+        });
+
+        window.addEventListener('load', checkUserLoginStatus);
+        
+        // --- END OF USER PROFILE LOGIC ---
+
+        // --- Search Bar Animation ---
+        const searchBtn = document.getElementById('search-btn');
+        const searchContainer = document.getElementById('search-container');
+        const searchInput = document.getElementById('search-input');
+
+        searchBtn.addEventListener('click', (event) => {
+            event.stopPropagation(); // Prevent click from bubbling to document
+            searchContainer.classList.toggle('active');
+            if (searchContainer.classList.contains('active')) {
+                searchInput.focus();
+            }
+        });
+
+        // Close search bar if clicking outside of it
+        document.addEventListener('click', (event) => {
+            if (!searchContainer.contains(event.target) && searchContainer.classList.contains('active')) {
+                searchContainer.classList.remove('active');
+            }
+        });
+
+        // --- END OF AI ENHANCEMENTS SCRIPT ---
+
+
+        // Mobile Menu Toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        mobileMenuBtn.addEventListener('click', function() {
+            mobileMenu.classList.toggle('active');
+            const icon = mobileMenuBtn.querySelector('i');
+            if (icon.classList.contains('fa-bars')) {
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-times');
+            } else {
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            }
+        });
+        
+        mobileMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.remove('active');
+                 mobileMenuBtn.querySelector('i').classList.remove('fa-times');
+                 mobileMenuBtn.querySelector('i').classList.add('fa-bars');
+            });
+        });
+
+        // Scroll Animations
+        const scrollElements = document.querySelectorAll('.scroll-animate');
+
+        const elementInView = (el, dividend = 1) => {
+            const elementTop = el.getBoundingClientRect().top;
+            return (
+                elementTop <= (window.innerHeight || document.documentElement.clientHeight) / dividend
+            );
+        };
+
+        const displayScrollElement = (element) => {
+            element.classList.add('visible');
+        };
+
+        const handleScrollAnimation = () => {
+            scrollElements.forEach((el) => {
+                if (elementInView(el, 1.25)) {
+                    displayScrollElement(el);
+                }
+            });
+        };
+        
+        window.addEventListener('scroll', () => {
+            handleScrollAnimation();
+        });
+
+        handleScrollAnimation();
+    </script>
+</body>
+</html>

@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SKYMART | The Future of Shopping</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #121212; /* Darkest Gray for background */
+            --secondary: #00bcd4; /* Cyan for accents, slightly brighter */
+            --accent: #29b6f6; /* Light Blue for subtle glows */
+            --card-bg: rgba(255, 255, 255, 0.08); /* Transparent dark for cards */
+            --border-color: rgba(255, 255, 255, 0.15); /* Subtle border for glass effect */
+            --text-dark: #e0e0e0; /* Light gray for text on dark bg */
+            --text-light: #b0b0b0; /* Lighter gray for secondary text */
+            --white: #ffffff;
+            --gradient-start: rgba(0, 188, 212, 0.3);
+            --gradient-end: rgba(41, 182, 246, 0.3);
+        }
+
+        body {
+            font-family: 'Manrope', sans-serif;
+            background-color: var(--primary);
+            color: var(--text-dark);
+            overflow-x: hidden;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .scroll-animate {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+
+        .scroll-animate.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Custom Components */
+        .hero-section {
+            background-image: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1483985988355-763728e1935b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80');
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 50% 50%, var(--gradient-start) 0%, transparent 50%);
+            opacity: 0.15;
+            animation: pulseGlow 8s infinite alternate;
+        }
+
+        @keyframes pulseGlow {
+            0% { transform: scale(1); opacity: 0.15; }
+            50% { transform: scale(1.1); opacity: 0.25; }
+            100% { transform: scale(1); opacity: 0.15; }
+        }
+
+        .card-hover {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-hover::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0) 50%);
+            pointer-events: none;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4), 0 0 10px var(--accent), 0 0 20px var(--secondary);
+            border-color: rgba(255, 255, 255, 0.25);
+        }
+
+        .btn {
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(45deg, var(--secondary), var(--accent));
+            box-shadow: 0 4px 15px rgba(0, 188, 212, 0.4);
+            color: var(--primary); /* Dark text on bright button */
+        }
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 188, 212, 0.6);
+            color: white; /* White text on hover */
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--secondary);
+            color: var(--secondary);
+            box-shadow: 0 0 8px rgba(0, 188, 212, 0.3);
+        }
+        .btn-outline:hover {
+            background: linear-gradient(45deg, var(--secondary), var(--accent));
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 0 15px rgba(0, 188, 212, 0.6);
+        }
+
+        .nav-link {
+            position: relative;
+            transition: color 0.3s ease;
+            color: var(--text-light);
+        }
+        .nav-link:hover {
+            color: var(--secondary);
+            text-shadow: 0 0 5px var(--secondary);
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 2px;
+            background-color: var(--secondary);
+            box-shadow: 0 0 8px var(--secondary);
+            transition: width 0.3s ease;
+        }
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        
+        #mobile-menu {
+            transform: translateX(100%);
+            transition: transform 0.3s ease-in-out;
+            background-color: rgba(18, 18, 18, 0.95);
+            backdrop-filter: blur(10px);
+        }
+        #mobile-menu.active {
+            transform: translateX(0);
+        }
+
+        header {
+            background-color: rgba(18, 18, 18, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+        }
+        .logo {
+            color: var(--secondary);
+            text-shadow: 0 0 8px var(--secondary);
+        }
+
+        #search-container.active #search-input {
+            width: 200px;
+            opacity: 1;
+            padding-left: 1rem;
+            padding-right: 1rem;
+            border-color: var(--secondary);
+        }
+
+        #search-container.active #search-btn {
+            color: var(--secondary);
+        }
+
+        .btn-loader.hidden {
+            display: none;
+        }
+
+        /* --- Custom CSS for Form Animation --- */
+        #form-wrapper {
+            overflow: hidden;
+        }
+        #form-container {
+            display: flex;
+            width: 200%; /* Contains both forms side-by-side */
+            transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        #form-container.active {
+            transform: translateX(-50%);
+        }
+        .form-content {
+            width: 50%;
+            flex-shrink: 0;
+        }
+        
+        .toggle-tab-container {
+            position: relative;
+            display: flex;
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            padding: 4px;
+        }
+
+        #toggle-slider {
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            height: calc(100% - 8px);
+            width: calc(50% - 4px);
+            background: linear-gradient(45deg, var(--secondary), var(--accent));
+            border-radius: 0.5rem;
+            box-shadow: 0 0 10px rgba(0, 188, 212, 0.8);
+            transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            z-index: 0;
+        }
+
+        .toggle-btn {
+            flex: 1;
+            z-index: 1;
+            color: var(--text-light);
+            transition: color 0.3s ease;
+        }
+
+        .toggle-btn.active {
+            color: var(--primary);
+        }
+
+        .modal {
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 100;
+        }
+        .modal-content {
+            background-color: var(--primary);
+            border: 1px solid var(--border-color);
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#" class="text-3xl font-extrabold tracking-tighter logo flex items-center gap-2"><i class="fas fa-cloud"></i> SKYMART</a>
+            <nav class="hidden md:flex items-center space-x-8">
+                <a href="#home" class="nav-link font-medium">Home</a>
+                <a href="#categories" class="nav-link font-medium">Categories</a>
+                <a href="#featured" class="nav-link font-medium">Products</a>
+                <a href="#about" class="nav-link font-medium">About</a>
+            </nav>
+            <div class="hidden md:flex items-center space-x-4">
+                 <div id="search-container" class="relative flex items-center">
+                    <input type="text" id="search-input" placeholder="Search..." class="absolute right-8 w-0 opacity-0 bg-[var(--card-bg)] backdrop-blur-sm border border-[var(--border-color)] focus:border-secondary rounded-full py-1 text-white focus:ring-2 focus:ring-secondary focus:outline-none transition-all duration-500 ease-in-out">
+                    <button id="search-btn" class="text-text-light hover:text-secondary z-10 transition-colors duration-300">
+                        <i class="fas fa-search text-xl"></i>
+                    </button>
+                </div>
+                 <button class="relative text-text-light hover:text-secondary">
+                    <i class="fas fa-shopping-cart text-xl"></i>
+                </button>
+                 <button class="relative text-text-light hover:text-secondary">
+                    <i class="fas fa-user text-xl"></i>
+                </button>
+            </div>
+            <button id="mobile-menu-btn" class="md:hidden text-text-dark z-50">
+                <i class="fas fa-bars text-2xl"></i>
+            </button>
+        </div>
+    </header>
+
+    <div id="mobile-menu" class="fixed inset-0 z-40 md:hidden">
+        <div class="flex flex-col items-center justify-center h-full space-y-8">
+            <a href="#home" class="text-white text-2xl font-bold hover:text-secondary">Home</a>
+            <a href="#categories" class="text-white text-2xl font-bold hover:text-secondary">Categories</a>
+            <a href="#featured" class="text-white text-2xl font-bold hover:text-secondary">Products</a>
+            <a href="#about" class="text-white text-2xl font-bold hover:text-secondary">About</a>
+        </div>
+    </div>
+
+    <section id="home" class="hero-section min-h-[70vh] flex items-center py-20">
+        <div class="container mx-auto px-6 text-left relative z-10">
+            <div class="max-w-2xl">
+                <h1 class="text-5xl md:text-7xl font-extrabold leading-tight tracking-tighter mb-4 text-white" style="animation: fadeIn 1s ease-out; text-shadow: 0 0 15px rgba(0, 188, 212, 0.5);">Summer Collection <br> 2025</h1>
+                <p class="text-xl mb-8 text-text-light" style="animation: fadeIn 1s 0.3s ease-out backwards;">Discover the latest trends in fashion and accessories with up to 40% discount on selected items.</p>
+                <div style="animation: fadeIn 1s 0.6s ease-out backwards;">
+                    <a href="#featured" class="btn btn-secondary px-8 py-4 rounded-lg font-bold uppercase tracking-wider">Shop Now</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="categories" class="py-20 bg-primary">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16 scroll-animate">
+                <h2 class="text-4xl font-extrabold tracking-tight text-white">Explore Our Collections</h2>
+                <p class="text-lg text-text-light mt-2 max-w-2xl mx-auto">Find exactly what you're looking for by browsing our curated categories.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="relative rounded-lg card-hover scroll-animate overflow-hidden h-64 flex flex-col justify-end items-center text-center p-6 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1523381210434-271e8be1f52b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80')">
+                    <div class="absolute inset-0 bg-black/60"></div>
+                    <div class="relative z-10">
+                        <div class="text-secondary text-4xl mb-2"><i class="fas fa-tshirt"></i></div>
+                        <h3 class="text-xl font-bold mb-1 text-white">Clothing</h3>
+                    </div>
+                </div>
+                <div class="relative rounded-lg card-hover scroll-animate overflow-hidden h-64 flex flex-col justify-end items-center text-center p-6 bg-cover bg-center" style="transition-delay: 100ms; background-image: url('https://images.unsplash.com/photo-1605733513597-a8f8341084e6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1724&q=80')">
+                    <div class="absolute inset-0 bg-black/60"></div>
+                    <div class="relative z-10">
+                        <div class="text-secondary text-4xl mb-2"><i class="fas fa-shoe-prints"></i></div>
+                        <h3 class="text-xl font-bold mb-1 text-white">Footwear</h3>
+                    </div>
+                </div>
+                <div class="relative rounded-lg card-hover scroll-animate overflow-hidden h-64 flex flex-col justify-end items-center text-center p-6 bg-cover bg-center" style="transition-delay: 200ms; background-image: url('https://images.unsplash.com/photo-1533139502658-0198f920d8e8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1742&q=80')">
+                    <div class="absolute inset-0 bg-black/60"></div>
+                    <div class="relative z-10">
+                        <div class="text-secondary text-4xl mb-2"><i class="fas fa-gem"></i></div>
+                        <h3 class="text-xl font-bold mb-1 text-white">Accessories</h3>
+                    </div>
+                </div>
+                <div class="relative rounded-lg card-hover scroll-animate overflow-hidden h-64 flex flex-col justify-end items-center text-center p-6 bg-cover bg-center" style="transition-delay: 300ms; background-image: url('https://images.unsplash.com/photo-1593642633279-1796119d5482?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1744&q=80')">
+                    <div class="absolute inset-0 bg-black/60"></div>
+                    <div class="relative z-10">
+                        <div class="text-secondary text-4xl mb-2"><i class="fas fa-laptop-code"></i></div>
+                        <h3 class="text-xl font-bold mb-1 text-white">Electronics</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="featured" class="py-20 bg-primary">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16 scroll-animate">
+                <h2 class="text-4xl font-extrabold tracking-tight text-white">Featured Products</h2>
+                <p class="text-lg text-text-light mt-2">Handpicked for you. Don't miss out on these popular items.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+                <div class="rounded-xl overflow-hidden card-hover scroll-animate flex flex-col">
+                    <img src="https://images.unsplash.com/photo-1585386959984-a4155224a1ad?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1374&q=80" alt="Minimalist Watch" class="w-full h-64 object-cover">
+                    <div class="p-6 flex flex-col flex-grow">
+                        <h3 class="text-xl font-bold mb-2 text-white">Minimalist Watch</h3>
+                        <div class="flex justify-between items-center mt-auto">
+                            <span class="text-2xl font-extrabold text-secondary">Rs. 999</span>
+                            <button class="btn btn-secondary px-4 py-2 rounded-lg font-bold text-sm">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="rounded-xl overflow-hidden card-hover scroll-animate flex flex-col" style="transition-delay: 100ms;">
+                    <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80" alt="Sport Shoes" class="w-full h-64 object-cover">
+                    <div class="p-6 flex flex-col flex-grow">
+                        <h3 class="text-xl font-bold mb-2 text-white">Sport Shoes</h3>
+                        <div class="flex justify-between items-center mt-auto">
+                            <span class="text-2xl font-extrabold text-secondary">Rs. 2199</span>
+                            <button class="btn btn-secondary px-4 py-2 rounded-lg font-bold text-sm">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="rounded-xl overflow-hidden card-hover scroll-animate flex flex-col" style="transition-delay: 200ms;">
+                    <img src="https://images.unsplash.com/photo-1585155770447-2f66e2a397b5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1738&q=80" alt="Wireless Headphones" class="w-full h-64 object-cover">
+                    <div class="p-6 flex flex-col flex-grow">
+                        <h3 class="text-xl font-bold mb-2 text-white">Wireless Headphones</h3>
+                        <div class="flex justify-between items-center mt-auto">
+                            <span class="text-2xl font-extrabold text-secondary">Rs. 1499</span>
+                           <button class="btn btn-secondary px-4 py-2 rounded-lg font-bold text-sm">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+                 <div class="rounded-xl overflow-hidden card-hover scroll-animate flex flex-col" style="transition-delay: 300ms;">
+                    <img src="https://images.unsplash.com/photo-1593642633279-1796119d5482?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1738&q=80" alt="Laptop" class="w-full h-64 object-cover">
+                    <div class="p-6 flex flex-col flex-grow">
+                        <h3 class="text-xl font-bold mb-2 text-white">Laptop</h3>
+                        <div class="flex justify-between items-center mt-auto">
+                            <span class="text-2xl font-extrabold text-secondary">Rs. 41999</span>
+                            <button class="btn btn-secondary px-4 py-2 rounded-lg font-bold text-sm">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="py-20 bg-gray-900/50 text-white">
+        <div class="container mx-auto px-6 text-center scroll-animate">
+            <h2 class="text-4xl font-extrabold tracking-tight mb-4">About SKYMART</h2>
+            <p class="text-lg text-gray-300 max-w-3xl mx-auto mb-8">SKYMART is your premier destination for a premium online shopping experience. We believe in providing our customers with the highest quality products, from the latest fashion trends to cutting-edge electronics. Our mission is to curate a collection that inspires and elevates your lifestyle.</p>
+            <p class="text-lg text-gray-300 max-w-3xl mx-auto">Founded in 2025 in the heart of Srinagar, we are committed to exceptional customer service, secure shopping, and fast, reliable shipping. Join the SKYMART family and discover a new standard in online retail.</p>
+        </div>
+    </section>
+
+    <section id="login" class="py-20 bg-primary">
+        <div class="container mx-auto px-6 flex justify-center">
+            <div class="w-full max-w-md card-hover rounded-2xl p-8 scroll-animate">
+                <h2 class="text-3xl font-extrabold text-center text-white mb-4">Join SKYMART</h2>
+                
+                <div class="toggle-tab-container mb-6">
+                    <div id="toggle-slider"></div>
+                    <button id="login-toggle" class="flex-1 py-2 rounded-md font-semibold transition-all duration-300 toggle-btn active">Login</button>
+                    <button id="signup-toggle" class="flex-1 py-2 rounded-md font-semibold transition-all duration-300 toggle-btn">Sign Up</button>
+                </div>
+                
+                <div id="form-wrapper">
+                    <div id="form-container" class="transition-transform duration-500 ease-in-out">
+                        <div class="form-content">
+                            <form id="login-form" class="space-y-6">
+                                <div>
+                                    <label for="login-email" class="text-sm font-medium text-text-light">Email</label>
+                                    <input type="email" id="login-email" class="mt-1 w-full p-3 bg-black/20 border border-border-color rounded-lg text-white focus:ring-2 focus:ring-secondary focus:outline-none" placeholder="you@example.com">
+                                </div>
+                                <div>
+                                    <label for="login-password" class="text-sm font-medium text-text-light">Password</label>
+                                    <input type="password" id="login-password" class="mt-1 w-full p-3 bg-black/20 border border-border-color rounded-lg text-white focus:ring-2 focus:ring-secondary focus:outline-none" placeholder="••••••••">
+                                </div>
+                                <div class="flex items-center justify-between text-sm">
+                                    <div class="flex items-center gap-2">
+                                        <input id="remember-me" type="checkbox" class="h-4 w-4 rounded bg-black/20 border-border-color text-secondary focus:ring-secondary">
+                                        <label for="remember-me" class="text-text-light">Remember me</label>
+                                    </div>
+                                    <a href="#" class="font-medium text-secondary hover:underline">Forgot password?</a>
+                                </div>
+                                <button type="submit" id="login-btn" class="w-full btn btn-secondary py-3 rounded-lg font-bold">
+                                    <span class="btn-text">Login</span>
+                                    <span class="btn-loader hidden"><i class="fas fa-spinner fa-spin"></i></span>
+                                </button>
+                            </form>
+                        </div>
+                        
+                        <div class="form-content">
+                            <form id="signup-form" class="space-y-6">
+                                <div>
+                                    <label for="signup-name" class="text-sm font-medium text-text-light">Full Name</label>
+                                    <input type="text" id="signup-name" class="mt-1 w-full p-3 bg-black/20 border border-border-color rounded-lg text-white focus:ring-2 focus:ring-secondary focus:outline-none" placeholder="John Doe" required>
+                                </div>
+                                <div>
+                                    <label for="signup-email" class="text-sm font-medium text-text-light">Email</label>
+                                    <input type="email" id="signup-email" class="mt-1 w-full p-3 bg-black/20 border border-border-color rounded-lg text-white focus:ring-2 focus:ring-secondary focus:outline-none" placeholder="you@example.com" required>
+                                </div>
+                                <div id="signup-password-group">
+                                    <label for="signup-password" class="text-sm font-medium text-text-light">Password</label>
+                                    <input type="password" id="signup-password" class="mt-1 w-full p-3 bg-black/20 border border-border-color rounded-lg text-white focus:ring-2 focus:ring-secondary focus:outline-none" placeholder="••••••••" required>
+                                </div>
+                                <div id="form-messages" class="text-center text-sm font-semibold"></div>
+                                <button type="submit" id="signup-btn" class="w-full btn btn-secondary py-3 rounded-lg font-bold">
+                                     <span class="btn-text">Create Account</span>
+                                     <span class="btn-loader hidden"><i class="fas fa-spinner fa-spin"></i></span>
+                                </button>
+                            </form>
+                            
+                            <form id="otp-form" class="space-y-6 hidden">
+                                <p class="text-sm text-center text-text-light" id="otp-message">A 6-digit verification code has been sent to your email.</p>
+                                <div>
+                                    <label for="otp-input" class="text-sm font-medium text-text-light">Enter OTP</label>
+                                    <input type="text" id="otp-input" class="mt-1 w-full p-3 bg-black/20 border border-border-color rounded-lg text-white focus:ring-2 focus:ring-secondary focus:outline-none" placeholder="••••••" pattern="\d{6}" required>
+                                </div>
+                                <div id="otp-error-message" class="text-red-500 text-sm text-center hidden">Incorrect OTP. Please try again.</div>
+                                <button type="submit" id="verify-btn" class="w-full btn btn-secondary py-3 rounded-lg font-bold">
+                                    <span class="btn-text">Verify & Login</span>
+                                    <span class="btn-loader hidden"><i class="fas fa-spinner fa-spin"></i></span>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center mt-6">
+                    <p class="text-sm text-text-light">Or continue with</p>
+                    <div class="flex justify-center gap-4 mt-4">
+                        <button class="w-12 h-12 flex items-center justify-center rounded-full bg-black/20 border border-border-color text-text-light hover:bg-secondary/20 hover:text-white transition-colors"><i class="fab fa-google text-xl"></i></button>
+                        <button class="w-12 h-12 flex items-center justify-center rounded-full bg-black/20 border border-border-color text-text-light hover:bg-secondary/20 hover:text-white transition-colors"><i class="fab fa-apple text-xl"></i></button>
+                        <button class="w-12 h-12 flex items-center justify-center rounded-full bg-black/20 border border-border-color text-text-light hover:bg-secondary/20 hover:text-white transition-colors"><i class="fab fa-facebook-f text-xl"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div id="status-modal" class="fixed inset-0 modal hidden items-center justify-center p-4">
+        <div class="modal-content rounded-xl shadow-2xl w-full max-w-sm p-6 relative">
+            <div class="flex items-center justify-center text-secondary text-5xl mb-4">
+                <i id="status-icon" class="fas"></i>
+            </div>
+            <p id="status-message" class="text-center text-white text-lg font-medium"></p>
+            <div class="flex justify-center mt-6">
+                <button id="close-status-modal" class="btn btn-secondary px-6 py-2 rounded-lg font-bold">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <button id="ai-assistant-fab" class="fixed bottom-6 right-6 bg-gradient-to-br from-secondary to-accent text-white w-16 h-16 rounded-full shadow-lg flex items-center justify-center z-50 transform hover:scale-110 transition-transform">
+        <i class="fas fa-magic text-2xl"></i>
+    </button>
+
+    <div id="ai-assistant-modal" class="fixed inset-0 bg-black bg-opacity-70 z-[100] hidden items-center justify-center p-4">
+        <div class="bg-primary border border-border-color rounded-2xl shadow-2xl w-full max-w-lg p-6 relative card-hover">
+            <button id="close-assistant-modal" class="absolute top-4 right-4 text-text-light hover:text-white">
+                <i class="fas fa-times text-2xl"></i>
+            </button>
+            <div class="flex items-center mb-4">
+                <h2 class="text-2xl font-bold text-white mr-2">✨ AI Shopping Assistant</h2>
+            </div>
+            <p class="text-text-light mb-4">Need inspiration? Describe what you're looking for, and I'll suggest some ideas!</p>
+            <div id="assistant-response-container" class="mb-4 p-4 bg-black bg-opacity-20 rounded-lg min-h-[100px] text-text-dark whitespace-pre-wrap overflow-y-auto max-h-48"></div>
+            <div class="flex flex-col">
+                <textarea id="assistant-input" class="w-full bg-black bg-opacity-20 border border-border-color rounded-lg p-2 text-white focus:ring-2 focus:ring-secondary focus:outline-none mb-4" rows="3" placeholder="e.g., 'Help me find a gift for a friend who loves hiking'"></textarea>
+                <button id="get-advice-btn" class="btn btn-secondary py-3 rounded-lg font-bold">
+                    <span class="btn-text">Get Advice</span>
+                    <span class="btn-loader hidden"><i class="fas fa-spinner fa-spin"></i></span>
+                </button>
+            </div>
+        </div>
+    </section>
+    
+    <footer class="bg-primary text-white">
+        <div class="container mx-auto px-6 py-12">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="font-bold text-lg mb-4 tracking-wider text-secondary">SKYMART</h3>
+                    <p class="text-gray-400">The future of online shopping, delivered today.</p>
+                </div>
+                <div>
+                    <h3 class="font-bold text-lg mb-4 tracking-wider text-white">Shop</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-secondary">New Arrivals</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-secondary">Best Sellers</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-bold text-lg mb-4 tracking-wider text-white">Support</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-secondary">Contact Us</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-secondary">FAQ</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-secondary">Shipping & Returns</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-bold text-lg mb-4 tracking-wider text-white">Contact</h3>
+                     <p class="text-gray-400">123 Shopping Street, Srinagar</p>
+                    <p class="text-gray-400">+91 987 654 3210</p>
+                    <p class="text-gray-400">support@skymart.com</p>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-10 pt-6 text-center text-gray-400 text-sm">
+                <p>&copy; 2025 SKYMART. ALL RIGHTS RESERVED.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // --- API & State Management ---
+        let currentEmail = null;
+        const formMessages = document.getElementById('form-messages');
+        const signupBtn = document.getElementById('signup-btn');
+        const loginBtn = document.getElementById('login-btn');
+        const verifyBtn = document.getElementById('verify-btn');
+        const statusModal = document.getElementById('status-modal');
+        const statusIcon = document.getElementById('status-icon');
+        const statusMessage = document.getElementById('status-message');
+        const closeStatusModalBtn = document.getElementById('close-status-modal');
+        
+        // Modal functions
+        function showStatusModal(isSuccess, message) {
+            statusIcon.className = `fas ${isSuccess ? 'fa-check-circle' : 'fa-times-circle'}`;
+            statusIcon.style.color = isSuccess ? '#00bcd4' : '#ef4444';
+            statusMessage.textContent = message;
+            statusModal.classList.remove('hidden');
+            statusModal.classList.add('flex');
+        }
+
+        function hideStatusModal() {
+            statusModal.classList.add('hidden');
+            statusModal.classList.remove('flex');
+        }
+
+        closeStatusModalBtn.addEventListener('click', hideStatusModal);
+
+        // --- Login/Signup Form Toggle ---
+        const loginToggle = document.getElementById('login-toggle');
+        const signupToggle = document.getElementById('signup-toggle');
+        const formContainer = document.getElementById('form-container');
+        const loginForm = document.getElementById('login-form');
+        const signupForm = document.getElementById('signup-form');
+        const otpForm = document.getElementById('otp-form');
+        const otpInput = document.getElementById('otp-input');
+        const otpErrorMessage = document.getElementById('otp-error-message');
+        const toggleSlider = document.getElementById('toggle-slider');
+
+        loginToggle.addEventListener('click', () => {
+            formContainer.classList.remove('active');
+            loginToggle.classList.add('active');
+            signupToggle.classList.remove('active');
+            toggleSlider.style.transform = 'translateX(0)';
+            signupForm.classList.remove('hidden');
+            otpForm.classList.add('hidden');
+        });
+
+        signupToggle.addEventListener('click', () => {
+            formContainer.classList.add('active');
+            signupToggle.classList.add('active');
+            loginToggle.classList.remove('active');
+            toggleSlider.style.transform = 'translateX(100%)';
+        });
+
+        // Simple client-side email format validation using regex
+        function isValidEmail(email) {
+            const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+            return regex.test(email);
+        }
+
+        // Handle Login Form Submission
+        loginForm.addEventListener('submit', async function(event) {
+            event.preventDefault();
+            
+            const email = document.getElementById('login-email').value.trim();
+            const password = document.getElementById('login-password').value.trim();
+
+            // Client-side validation
+            if (!email || !password) {
+                showStatusModal(false, 'Please enter both email and password.');
+                return;
+            }
+            if (!isValidEmail(email)) {
+                showStatusModal(false, 'Please enter a valid email address.');
+                return;
+            }
+
+            // Show loading state on button
+            const loginBtnText = loginBtn.querySelector('.btn-text');
+            const loginBtnLoader = loginBtn.querySelector('.btn-loader');
+            loginBtnText.classList.add('hidden');
+            loginBtnLoader.classList.remove('hidden');
+            loginBtn.disabled = true;
+
+            try {
+                // Real API call to the backend for authentication
+                const response = await fetch('http://localhost:3000/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: email, password: password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Login successful
+                    // In a real application, the backend would send back a token.
+                    // For this example, we'll store user data directly.
+                    localStorage.setItem('skymartUser', JSON.stringify({ name: data.name, email: email }));
+                    showStatusModal(true, 'Login successful! Redirecting...');
+                    
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 2000);
+                } else {
+                    // Login failed due to invalid credentials or other server-side errors
+                    showStatusModal(false, data.message || 'Login failed. Please check your credentials.');
+                }
+            } catch (error) {
+                console.error('Network Error:', error);
+                showStatusModal(false, 'Network error. Please make sure the backend server is running and try again.');
+            } finally {
+                // Reset button state
+                loginBtnText.classList.remove('hidden');
+                loginBtnLoader.classList.add('hidden');
+                loginBtn.disabled = false;
+            }
+        });
+
+        // Handle Sign Up Form Submission
+        signupForm.addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const name = document.getElementById('signup-name').value;
+            const email = document.getElementById('signup-email').value;
+            const password = document.getElementById('signup-password').value;
+
+            if (!name || !email || !password) {
+                showStatusModal(false, 'Please fill out all fields.');
+                return;
+            }
+
+            // Show loading state on button
+            const signupBtnText = signupBtn.querySelector('.btn-text');
+            const signupBtnLoader = signupBtn.querySelector('.btn-loader');
+            signupBtnText.classList.add('hidden');
+            signupBtnLoader.classList.remove('hidden');
+            signupBtn.disabled = true;
+
+            try {
+                const response = await fetch('http://localhost:3000/send-otp', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    currentEmail = email; // Store email for later verification
+                    
+                    showStatusModal(true, 'A verification code has been sent to your email.');
+
+                    // Switch forms after successful OTP send
+                    signupForm.classList.add('hidden');
+                    otpForm.classList.remove('hidden');
+                    document.getElementById('otp-message').textContent = `A 6-digit verification code has been sent to ${email}.`;
+                } else {
+                    showStatusModal(false, data.message || 'Failed to send OTP. Please try again.');
+                }
+            } catch (error) {
+                console.error('Network Error:', error);
+                showStatusModal(false, 'Network error. Please make sure the backend server is running and try again.');
+            } finally {
+                // Reset button state
+                signupBtnText.classList.remove('hidden');
+                signupBtnLoader.classList.add('hidden');
+                signupBtn.disabled = false;
+            }
+        });
+
+        // Handle OTP Form Submission
+        otpForm.addEventListener('submit', async function(event) {
+            event.preventDefault();
+            
+            const enteredOtp = otpInput.value;
+            if (!currentEmail || !enteredOtp) {
+                showStatusModal(false, 'An unexpected error occurred. Please try the signup process again.');
+                return;
+            }
+
+            // Show loading state on button
+            const verifyBtnText = verifyBtn.querySelector('.btn-text');
+            const verifyBtnLoader = verifyBtn.querySelector('.btn-loader');
+            verifyBtnText.classList.add('hidden');
+            verifyBtnLoader.classList.remove('hidden');
+            verifyBtn.disabled = true;
+
+            try {
+                const response = await fetch('http://localhost:3000/verify-otp', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: currentEmail, otp: enteredOtp })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // OTP is correct, save user data (in a real app, this would be on the backend)
+                    localStorage.setItem('skymartUser', JSON.stringify({ name: document.getElementById('signup-name').value, email: currentEmail }));
+                    showStatusModal(true, 'OTP verified successfully! Redirecting...');
+                    
+                    // Redirect after a short delay
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 2000);
+                } else {
+                    showStatusModal(false, data.message || 'Incorrect OTP. Please try again.');
+                }
+            } catch (error) {
+                console.error('Network Error:', error);
+                showStatusModal(false, 'Network error. Please make sure the backend server is running and try again.');
+            } finally {
+                 // Reset button state
+                verifyBtnText.classList.remove('hidden');
+                verifyBtnLoader.classList.add('hidden');
+                verifyBtn.disabled = false;
+            }
+        });
+
+        // --- AI Shopping Assistant Logic ---
+        const aiAssistantFab = document.getElementById('ai-assistant-fab');
+        const aiAssistantModal = document.getElementById('ai-assistant-modal');
+        const closeAssistantModalBtn = document.getElementById('close-assistant-modal');
+        const getAdviceBtn = document.getElementById('get-advice-btn');
+        const assistantInput = document.getElementById('assistant-input');
+        const assistantResponseContainer = document.getElementById('assistant-response-container');
+
+        const apiKey = ""; // Per instructions, this is populated by the environment.
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+
+        async function callGemini(prompt, retries = 3, delay = 1000) {
+            try {
+                const payload = { contents: [{ parts: [{ text: prompt }] }] };
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (!response.ok) {
+                    if (response.status === 429 && retries > 0) {
+                        await new Promise(res => setTimeout(res, delay));
+                        return callGemini(prompt, retries - 1, delay * 2);
+                    }
+                    throw new Error(`API call failed: ${response.status}`);
+                }
+                const result = await response.json();
+                return result.candidates?.[0]?.content?.parts?.[0]?.text || "Sorry, I couldn't generate a response.";
+            } catch (error) {
+                console.error("Gemini API Error:", error);
+                return `An error occurred: ${error.message}. Please try again.`;
+            }
+        }
+
+        aiAssistantFab.addEventListener('click', () => {
+            aiAssistantModal.classList.remove('hidden');
+            aiAssistantModal.classList.add('flex');
+        });
+
+        closeAssistantModalBtn.addEventListener('click', () => {
+            aiAssistantModal.classList.add('hidden');
+            aiAssistantModal.classList.remove('flex');
+        });
+
+        getAdviceBtn.addEventListener('click', async () => {
+            const userInput = assistantInput.value.trim();
+            if (!userInput) return;
+
+            const btnText = getAdviceBtn.querySelector('.btn-text');
+            const btnLoader = getAdviceBtn.querySelector('.btn-loader');
+            btnText.classList.add('hidden');
+            btnLoader.classList.remove('hidden');
+            getAdviceBtn.disabled = true;
+            assistantResponseContainer.innerHTML = '<div class="flex justify-center items-center h-full"><i class="fas fa-spinner fa-spin text-2xl text-secondary"></i></div>';
+
+            const prompt = `You are a friendly shopping assistant for SKYMART. A customer asks: "${userInput}". Suggest 3-4 creative product ideas from categories like Clothing, Electronics, Accessories, and Footwear. Be enthusiastic and clear.`;
+            const response = await callGemini(prompt);
+            assistantResponseContainer.textContent = response;
+
+            btnText.classList.remove('hidden');
+            btnLoader.classList.add('hidden');
+            getAdviceBtn.disabled = false;
+        });
+
+        // --- Search Bar Animation ---
+        const searchBtn = document.getElementById('search-btn');
+        const searchContainer = document.getElementById('search-container');
+        const searchInput = document.getElementById('search-input');
+
+        searchBtn.addEventListener('click', (event) => {
+            event.stopPropagation();
+            searchContainer.classList.toggle('active');
+            if (searchContainer.classList.contains('active')) searchInput.focus();
+        });
+
+        document.addEventListener('click', (event) => {
+            if (!searchContainer.contains(event.target) && searchContainer.classList.contains('active')) {
+                searchContainer.classList.remove('active');
+            }
+        });
+
+        // --- Mobile Menu Toggle ---
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('active');
+            const icon = mobileMenuBtn.querySelector('i');
+            icon.classList.toggle('fa-bars');
+            icon.classList.toggle('fa-times');
+        });
+        
+        mobileMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.remove('active');
+                mobileMenuBtn.querySelector('i').classList.add('fa-bars');
+                mobileMenuBtn.querySelector('i').classList.remove('fa-times');
+            });
+        });
+
+        // --- Scroll Animations ---
+        const scrollElements = document.querySelectorAll('.scroll-animate');
+        const elementInView = (el) => {
+            return el.getBoundingClientRect().top <= (window.innerHeight || document.documentElement.clientHeight);
+        };
+
+        const handleScrollAnimation = () => {
+            scrollElements.forEach(el => {
+                if (elementInView(el)) el.classList.add('visible');
+            });
+        };
+        
+        window.addEventListener('scroll', handleScrollAnimation);
+        handleScrollAnimation();
+    </script>
+</body>
+</html>
